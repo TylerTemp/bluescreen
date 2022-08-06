@@ -1,0 +1,6 @@
+{
+  "image": "example.jpg",
+  "timeout": 3,
+  "password": "exit",
+  "bgColor": [0, 124, 224]
+}
