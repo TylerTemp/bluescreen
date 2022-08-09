@@ -3,6 +3,8 @@ import os
 import json
 import time
 from codecs import open
+import sys
+import multiprocessing
 
 import pyHook
 import pythoncom
@@ -15,6 +17,8 @@ class Main(object):
     _display_pygame = False
     _pass_got = []
     exit_program = False
+
+    _pygame_inited = False
 
     def __init__(self, password, timeout, image_path, bg_color):
         hm = pyHook.HookManager()
@@ -60,10 +64,20 @@ class Main(object):
             # sys.exit()
 
     def display_pygame(self):
+        if self._pygame_inited:
+            return
+
+        self._pygame_inited = True
+
         print('start pygame')
         self._display_pygame = True
 
-        pygame.init()
+        try:
+            pygame.init()
+        except BaseException as e:
+            print(e)
+            sys.exit()
+
         pygame.mouse.set_visible(False)
         display_surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         display_surface.fill(self._bg_color)
@@ -111,11 +125,17 @@ class Main(object):
 #     print 'Transition', event.Transition
 #     print '---'
 
+def except_hook(*exc_info):
+    pass
+
 
 def main():
+    multiprocessing.freeze_support()
     config_file = os.path.join(os.getcwd(), 'config.json')
     with open(config_file, 'r', encoding='utf-8') as f:
         config = json.load(f)
+
+    sys.excepthook = except_hook
 
     main_obj = Main(config['password'], config['timeout'], config['image'], tuple(config['bgColor']))
     # main_obj.display_pygame()

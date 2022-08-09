@@ -8,7 +8,8 @@ setup(
     install_requires=[
         'pyHook',
         'pygame',
-        'pywin32'
+        'pywin32',
+        'pyinstaller==3.6'
     ],
     entry_points={
         'console_scripts': [
